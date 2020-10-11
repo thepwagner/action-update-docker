@@ -6,7 +6,7 @@ require (
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/moby/buildkit v0.7.2
 	github.com/stretchr/testify v1.6.1
-	github.com/thepwagner/action-update v0.0.8
+	github.com/thepwagner/action-update v0.0.9
 	golang.org/x/mod v0.3.0
 )
 
