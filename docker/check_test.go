@@ -22,8 +22,8 @@ func TestUpdater_CheckDockerhub(t *testing.T) {
 }
 
 func TestUpdater_CheckAuth(t *testing.T) {
-	//t.Skip("early integration test, check https://hub.docker.com/_/alpine?tab=tags")
-	var privateImage = updater.Dependency{Path: "docker.pkg.github.com/thepwagner/dependabot-test-docker/alpine", Version: "3.11.0"}
+	t.Skip("early integration test")
+	var privateImage = updater.Dependency{Path: "ghcr.io/thepwagner/alpine", Version: "3.11.0"}
 	u := updatertest.CheckInFixture(t, "simple", updaterFactory(), privateImage, nil)
 	assert.NotNil(t, u)
 	assert.Equal(t, "3.12.0", u.Next)

@@ -11,6 +11,7 @@ require (
 	github.com/docker/cli v0.0.0-20200915230204-cd8016b6bcc5
 	github.com/docker/distribution v0.0.0-20200223014041-6b972e50feee
 	github.com/docker/go v1.5.1-1 // indirect
+	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/fvbommel/sortorder v1.0.2 // indirect
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed // indirect
