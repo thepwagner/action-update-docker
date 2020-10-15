@@ -9,7 +9,7 @@ This Action checks for available updates to semver-compatible Docker images in D
 
 ## Simplest setup
 
-```
+```yaml
 - uses: actions/checkout@v2
   # If you use Actions "push" for CI too, a Personal Access Token is required for update PRs to trigger
   with:
