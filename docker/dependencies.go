@@ -2,6 +2,7 @@ package docker
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/moby/buildkit/frontend/dockerfile/command"
@@ -10,7 +11,19 @@ import (
 )
 
 func (u *Updater) Dependencies(_ context.Context) ([]updater.Dependency, error) {
-	return ExtractDockerfileDependencies(u.root, extractImages)
+	var deps []updater.Dependency
+	err := WalkDockerfiles(u.root, u.pathFilter, func(path string, parsed *parser.Result) error {
+		fileDeps, err := extractImages(parsed)
+		if err != nil {
+			return fmt.Errorf("extracting dependencies: %w", err)
+		}
+		deps = append(deps, fileDeps...)
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("collecting dependencies: %w", err)
+	}
+	return deps, nil
 }
 
 func extractImages(parsed *parser.Result) ([]updater.Dependency, error) {
