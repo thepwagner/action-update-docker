@@ -29,3 +29,6 @@ jobs:
             - name: golang
               pattern: golang
               post-script: script/sync-actions-go-version
+            - name: gorethink
+              pattern: /.*gorethink.*/
+              range: < 4
