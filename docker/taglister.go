@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/docker/cli/cli/command"
 	"github.com/docker/distribution"
 	"github.com/docker/distribution/reference"
 	"github.com/docker/distribution/registry/client"
@@ -63,6 +64,13 @@ func (r *RemoteTagLister) newRepository(domain string, imagePath string) (distri
 	if err != nil {
 		return nil, err
 	}
+
+	cli, err := command.NewDockerCli()
+	if err != nil {
+		return nil, err
+	}
+
+
 	// TODO: extract ~/.docker/config.json .auths
 	// Like https://github.com/docker/cli/blob/8107a381c181e3dec6757d9ffca801863fb1fc6f/cli/registry/client/client.go#L165-L171 ?
 	tokenHandler := auth.NewTokenHandlerWithOptions(auth.TokenHandlerOptions{
