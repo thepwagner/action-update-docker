@@ -1,4 +1,4 @@
-ARG REDIS_VERSION=6.0.0 # redis
+ARG REDIS_VERSION=6.0.8 # redis
 
 FROM redis:$REDIS_VERSION-alpine
 FROM alpine:3.11.0 # alpine
