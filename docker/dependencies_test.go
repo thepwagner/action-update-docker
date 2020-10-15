@@ -17,6 +17,10 @@ func TestUpdater_Dependencies(t *testing.T) {
 			{Path: "redis", Version: "6.0.0-alpine"},
 			{Path: "alpine", Version: "3.11.0"},
 		},
+		"comments": {
+			{Path: "redis", Version: "6.0.0-alpine"},
+			{Path: "alpine", Version: "3.11.0"},
+		},
 	}
 	updatertest.DependenciesFixtures(t, updaterFactory(), cases)
 }

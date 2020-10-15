@@ -1,8 +1,6 @@
 package docker
 
 import (
-	"context"
-
 	"github.com/thepwagner/action-update/updater"
 )
 
@@ -31,8 +29,4 @@ func WithTagsLister(tags TagLister) UpdaterOpt {
 	return func(u *Updater) {
 		u.tags = tags
 	}
-}
-
-func (u *Updater) ApplyUpdate(ctx context.Context, update updater.Update) error {
-	panic("implement me")
 }

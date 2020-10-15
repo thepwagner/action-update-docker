@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/moby/buildkit/frontend/dockerfile/parser"
-	updater2 "github.com/thepwagner/action-update/updater"
+	"github.com/thepwagner/action-update/updater"
 )
 
 func WalkDockerfiles(root string, walkFunc func(path string, parsed *parser.Result) error) error {
@@ -34,10 +34,8 @@ func WalkDockerfiles(root string, walkFunc func(path string, parsed *parser.Resu
 	return nil
 }
 
-func ExtractDockerfileDependencies(root string, extractor func(parsed *parser.Result) ([]updater2.Dependency, error)) ([]updater2.Dependency, error) {
-	deps := make([]updater2.Dependency, 0)
-
-	err := WalkDockerfiles(root, func(path string, parsed *parser.Result) error {
+func ExtractDockerfileDependencies(root string, extractor func(parsed *parser.Result) ([]updater.Dependency, error)) (deps []updater.Dependency, err error) {
+	err = WalkDockerfiles(root, func(path string, parsed *parser.Result) error {
 		fileDeps, err := extractor(parsed)
 		if err != nil {
 			return fmt.Errorf("extracting dependencies: %w", err)
@@ -45,12 +43,7 @@ func ExtractDockerfileDependencies(root string, extractor func(parsed *parser.Re
 		deps = append(deps, fileDeps...)
 		return nil
 	})
-
-	if err != nil {
-		return nil, fmt.Errorf("walking filesystem: %w", err)
-	}
-
-	return deps, nil
+	return
 }
 
 func parseDockerfile(path string) (*parser.Result, error) {
