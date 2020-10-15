@@ -11,10 +11,10 @@ import (
 
 func TestRemoteTagLister_Tags(t *testing.T) {
 	t.Skip("queries dockerhub")
-	
 	cases := []string{
 		"alpine",
 		"datadog/agent",
+		"ghcr.io/thepwagner/alpine",
 	}
 
 	for _, tc := range cases {
