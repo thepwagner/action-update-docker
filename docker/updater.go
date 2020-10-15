@@ -5,7 +5,8 @@ import (
 )
 
 type Updater struct {
-	root string
+	root       string
+	pathFilter func(string) bool
 
 	tags TagLister
 }

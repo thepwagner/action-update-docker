@@ -14,7 +14,7 @@ import (
 )
 
 func (u *Updater) ApplyUpdate(_ context.Context, update updater.Update) error {
-	return WalkDockerfiles(u.root, func(path string, parsed *parser.Result) error {
+	return WalkDockerfiles(u.root, u.pathFilter, func(path string, parsed *parser.Result) error {
 		vars := NewInterpolation(parsed)
 
 		// prepare a strings.NewReplacer to find/replace strings based on the parsed AST:

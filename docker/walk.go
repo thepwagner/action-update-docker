@@ -7,13 +7,15 @@ import (
 	"strings"
 
 	"github.com/moby/buildkit/frontend/dockerfile/parser"
-	"github.com/thepwagner/action-update/updater"
 )
 
-func WalkDockerfiles(root string, walkFunc func(path string, parsed *parser.Result) error) error {
+func WalkDockerfiles(root string, filter func(string) bool, walkFunc func(path string, parsed *parser.Result) error) error {
 	err := filepath.Walk(root, func(path string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
+		}
+		if filter != nil && filter(path) {
+			return nil
 		}
 		if fi.IsDir() || !strings.HasPrefix(filepath.Base(path), "Dockerfile") {
 			return nil
@@ -32,18 +34,6 @@ func WalkDockerfiles(root string, walkFunc func(path string, parsed *parser.Resu
 		return fmt.Errorf("walking filesystem: %w", err)
 	}
 	return nil
-}
-
-func ExtractDockerfileDependencies(root string, extractor func(parsed *parser.Result) ([]updater.Dependency, error)) (deps []updater.Dependency, err error) {
-	err = WalkDockerfiles(root, func(path string, parsed *parser.Result) error {
-		fileDeps, err := extractor(parsed)
-		if err != nil {
-			return fmt.Errorf("extracting dependencies: %w", err)
-		}
-		deps = append(deps, fileDeps...)
-		return nil
-	})
-	return
 }
 
 func parseDockerfile(path string) (*parser.Result, error) {
