@@ -27,7 +27,7 @@ func TestWalkDockerfiles(t *testing.T) {
 
 func TestWalkDockerfiles_PathFilter(t *testing.T) {
 	filter := func(s string) bool {
-		return !strings.Contains(s, "simple")
+		return !strings.HasPrefix(s, "simple")
 	}
 
 	var cnt int64

@@ -15,12 +15,14 @@ func WalkDockerfiles(root string, filter func(string) bool, walkFunc func(path s
 			return err
 		}
 
-		rel, err := filepath.Rel(root, path)
-		if err != nil {
-			return err
-		}
-		if filter != nil && filter(rel) {
-			return nil
+		if filter != nil {
+			rel, err := filepath.Rel(root, path)
+			if err != nil {
+				return err
+			}
+			if filter(rel) {
+				return nil
+			}
 		}
 
 		if fi.IsDir() || !strings.HasPrefix(filepath.Base(path), "Dockerfile") {
