@@ -32,6 +32,8 @@ github.com/agl/ed25519/edwards25519
 github.com/beorn7/perks/quantile
 # github.com/bitly/go-hostpool v0.1.0
 ## explicit
+# github.com/bmatcuk/doublestar/v2 v2.0.1
+github.com/bmatcuk/doublestar/v2
 # github.com/caarlos0/env/v6 v6.3.0
 github.com/caarlos0/env/v6
 # github.com/cenkalti/backoff v2.2.1+incompatible
@@ -375,7 +377,7 @@ github.com/stretchr/testify/mock
 github.com/stretchr/testify/require
 # github.com/syndtr/gocapability v0.0.0-20180916011248-d98352740cb2
 github.com/syndtr/gocapability/capability
-# github.com/thepwagner/action-update v0.0.12
+# github.com/thepwagner/action-update v0.0.13
 ## explicit
 github.com/thepwagner/action-update/actions
 github.com/thepwagner/action-update/actions/updateaction
