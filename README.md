@@ -25,7 +25,7 @@ This Action checks for available updates to semver-compatible Docker images in D
 
 ## Private dependencies
 
-If your image requires authentication, you can configure before invoking the action:
+If images requires authentication, you can configure before invoking the action:
 
 ```yaml
 - uses: actions/checkout@v2
