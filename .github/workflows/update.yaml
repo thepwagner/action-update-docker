@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '1.15.3'
-      - uses: thepwagner/action-update-go@action-update-go/main/github.com/thepwagner/action-update/v0.0.15
+      - uses: thepwagner/action-update-go@main
         with:
           log_level: debug
           token: ${{ secrets.MY_GITHUB_PAT }}
