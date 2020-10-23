@@ -7,7 +7,7 @@ require (
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
 	github.com/bitly/go-hostpool v0.1.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
-	github.com/cloudflare/cfssl v1.4.1 // indirect
+	github.com/cloudflare/cfssl v1.5.0 // indirect
 	github.com/docker/cli v0.0.0-20200915230204-cd8016b6bcc5
 	github.com/docker/distribution v0.0.0-20200223014041-6b972e50feee
 	github.com/docker/go v1.5.1-1 // indirect
