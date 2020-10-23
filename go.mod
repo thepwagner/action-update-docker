@@ -36,4 +36,5 @@ require (
 replace (
 	github.com/containerd/containerd => github.com/containerd/containerd v1.4.0
 	github.com/docker/docker => github.com/moby/moby v17.12.0-ce-rc1.0.20200916142827-bd33bbf0497b+incompatible
+	golang.org/x/sys => golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd
 )
