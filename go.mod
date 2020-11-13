@@ -13,7 +13,7 @@ require (
 	github.com/docker/go v1.5.1-1 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/fvbommel/sortorder v1.0.2 // indirect
-	github.com/google/go-cmp v0.5.2 // indirect
+	github.com/google/go-cmp v0.5.3 // indirect
 	github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed // indirect
 	github.com/hashicorp/go-version v1.2.1 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
