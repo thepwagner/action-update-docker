@@ -967,8 +967,8 @@ github.com/tdakkota/asciicheck v0.0.0-20200416190851-d7f85be797a2/go.mod h1:yHp0
 github.com/tdakkota/asciicheck v0.0.0-20200416200610-e657995f937b/go.mod h1:yHp0ai0Z9gUljN3o0xMhYJnH/IcvkdTBOX2fmJ93JEM=
 github.com/tetafro/godot v0.3.7/go.mod h1:/7NLHhv08H1+8DNj0MElpAACw1ajsCuf3TKNQxA5S+0=
 github.com/tetafro/godot v0.4.2/go.mod h1:/7NLHhv08H1+8DNj0MElpAACw1ajsCuf3TKNQxA5S+0=
-github.com/thepwagner/action-update v0.0.27 h1:5wZCtYJU6jLX1ypTIXtTc3l0QH8QJM3QqQlYHnBvkFs=
-github.com/thepwagner/action-update v0.0.27/go.mod h1:fYlNdEIgTv2uZf0n4Dk5+p17v7bjxYhw07lHR2ENXTw=
+github.com/thepwagner/action-update v0.0.28 h1:503klKa9TbArCObpzZwkD9DV+FjW0u0dOU+VuK6LmEc=
+github.com/thepwagner/action-update v0.0.28/go.mod h1:fYlNdEIgTv2uZf0n4Dk5+p17v7bjxYhw07lHR2ENXTw=
 github.com/theupdateframework/notary v0.6.1 h1:7wshjstgS9x9F5LuB1L5mBI2xNMObWqjz+cjWoom6l0=
 github.com/theupdateframework/notary v0.6.1/go.mod h1:MOfgIfmox8s7/7fduvB2xyPPMJCrjRLRizA8OFwpnKY=
 github.com/timakin/bodyclose v0.0.0-20190930140734-f7f2e9bca95e/go.mod h1:Qimiffbc6q9tBWlVV6x0P9sat/ao1xEkREYPPj9hphk=
