@@ -17,7 +17,7 @@ require (
 	github.com/lib/pq v1.9.0 // indirect
 	github.com/mattn/go-sqlite3 v1.14.5 // indirect
 	github.com/miekg/pkcs11 v1.0.3 // indirect
-	github.com/moby/buildkit v0.8.0-rc3
+	github.com/moby/buildkit v0.8.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.7.1 // indirect
 	github.com/stretchr/testify v1.6.1
