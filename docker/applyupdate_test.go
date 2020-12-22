@@ -6,7 +6,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+	"github.com/thepwagner/action-update-docker/docker"
 	"github.com/thepwagner/action-update/updater"
 	"github.com/thepwagner/action-update/updatertest"
 )
@@ -19,6 +21,13 @@ var (
 func TestUpdater_ApplyUpdate_Simple(t *testing.T) {
 	dockerfile := applyUpdateToFixture(t, "simple", alpine3120)
 	assert.Contains(t, dockerfile, "alpine:3.12.0")
+	assert.NotContains(t, dockerfile, "alpine:3.11.0")
+}
+
+func TestUpdater_ApplyUpdate_Simple_Pinned(t *testing.T) {
+	dockerfile := applyUpdateToFixture(t, "simple", alpine3120, withShaPinning("sha256:pinned")...)
+	assert.Contains(t, dockerfile, "alpine@sha256:pinned")
+	assert.NotContains(t, dockerfile, "alpine:3.12.0")
 	assert.NotContains(t, dockerfile, "alpine:3.11.0")
 }
 
@@ -43,10 +52,20 @@ func TestUpdater_ApplyUpdate_Comments(t *testing.T) {
 	assert.Contains(t, dockerfile, "# check out this whitespace\n\n\n# intentional trailing spaces  \n")
 }
 
-func applyUpdateToFixture(t *testing.T, fixture string, update updater.Update) string {
-	tempDir := updatertest.ApplyUpdateToFixture(t, fixture, &testFactory{}, update)
+func applyUpdateToFixture(t *testing.T, fixture string, update updater.Update, opts ...docker.UpdaterOpt) string {
+	tempDir := updatertest.ApplyUpdateToFixture(t, fixture, updaterFactory(opts...), update)
 	b, err := ioutil.ReadFile(filepath.Join(tempDir, "Dockerfile"))
 	require.NoError(t, err)
 	dockerfile := string(b)
+	t.Log(dockerfile)
 	return dockerfile
+}
+
+func withShaPinning(pinned string) []docker.UpdaterOpt {
+	mockPinner := &mockImagePinner{}
+	mockPinner.On("Pin", mock.Anything, mock.Anything).Return(pinned, nil)
+	return []docker.UpdaterOpt{
+		docker.WithShaPinning(true),
+		docker.WithImagePinner(mockPinner),
+	}
 }
