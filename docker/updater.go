@@ -5,8 +5,9 @@ import (
 )
 
 type Updater struct {
-	root       string
-	pathFilter func(string) bool
+	root        string
+	pathFilter  func(string) bool
+	pinImageSha bool
 
 	tags TagLister
 }
@@ -29,5 +30,11 @@ type UpdaterOpt func(*Updater)
 func WithTagsLister(tags TagLister) UpdaterOpt {
 	return func(u *Updater) {
 		u.tags = tags
+	}
+}
+
+func WithShaPinning(shaPinning bool) UpdaterOpt {
+	return func(u *Updater) {
+		u.pinImageSha = shaPinning
 	}
 }
