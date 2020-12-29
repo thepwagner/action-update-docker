@@ -15,7 +15,7 @@ require (
 	github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/lib/pq v1.9.0 // indirect
-	github.com/mattn/go-sqlite3 v1.14.5 // indirect
+	github.com/mattn/go-sqlite3 v1.14.6 // indirect
 	github.com/miekg/pkcs11 v1.0.3 // indirect
 	github.com/moby/buildkit v0.8.1
 	github.com/sirupsen/logrus v1.7.0
