@@ -21,7 +21,7 @@ require (
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.7.1 // indirect
 	github.com/stretchr/testify v1.6.1
-	github.com/thepwagner/action-update v0.0.33
+	github.com/thepwagner/action-update v0.0.35
 	github.com/theupdateframework/notary v0.6.1 // indirect
 	golang.org/x/mod v0.4.0
 	gopkg.in/dancannon/gorethink.v3 v3.0.5 // indirect
