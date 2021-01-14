@@ -20,7 +20,7 @@ require (
 	github.com/moby/buildkit v0.8.1
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.7.1 // indirect
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	github.com/thepwagner/action-update v0.0.37
 	github.com/theupdateframework/notary v0.6.1 // indirect
 	golang.org/x/mod v0.4.0
