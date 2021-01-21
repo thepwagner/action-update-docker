@@ -8,10 +8,15 @@ import (
 
 	"github.com/docker/cli/cli/command"
 	"github.com/docker/cli/cli/flags"
-	"github.com/docker/cli/cli/manifest/types"
+	manifest "github.com/docker/cli/cli/manifest/types"
 	"github.com/docker/cli/cli/registry/client"
+	"github.com/docker/cli/cli/trust"
 	"github.com/docker/distribution/reference"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/registry"
 	"github.com/sirupsen/logrus"
+	notary "github.com/theupdateframework/notary/client"
+	"github.com/theupdateframework/notary/tuf/data"
 )
 
 type TagLister interface {
@@ -26,14 +31,18 @@ type ImagePinner interface {
 }
 
 type RemoteRegistries struct {
-	rt http.RoundTripper
+	rt       http.RoundTripper
+	trustKey string
 }
 
-func NewRemoteRegistries() *RemoteRegistries {
+func NewRemoteRegistries(trustKey string) *RemoteRegistries {
 	return &RemoteRegistries{
-		rt: http.DefaultTransport,
+		rt:       http.DefaultTransport,
+		trustKey: trustKey,
 	}
 }
+
+const userAgent = "action-update-docker/1.0"
 
 func (r *RemoteRegistries) Tags(ctx context.Context, image string) ([]string, error) {
 	// Normalize image name:
@@ -43,22 +52,87 @@ func (r *RemoteRegistries) Tags(ctx context.Context, image string) ([]string, er
 	}
 	logrus.WithField("image", normalized.String()).Debug("listing image tags")
 
-	cli, err := command.NewDockerCli()
+	cli, err := r.newDockerCLI()
+	if err != nil {
+		return nil, err
+	}
+	resolver := authResolver(cli)
+
+	if !cli.ContentTrustEnabled() {
+		logrus.Debug("content trust disabled, listing registry")
+		tags, err := client.NewRegistryClient(resolver, userAgent, false).GetTags(ctx, normalized)
+		if err != nil {
+			return nil, fmt.Errorf("listing tags: %w", err)
+		}
+		return tags, nil
+	}
+
+	logrus.Debug("content trust enabled, listing notary")
+	imgRefAndAuth, err := trust.GetImageReferencesAndAuth(ctx, nil, resolver, image)
+	if err != nil {
+		return nil, err
+	}
+	notaryRepo, err := trust.GetNotaryRepository(cli.In(), cli.Out(), userAgent, imgRefAndAuth.RepoInfo(), imgRefAndAuth.AuthConfig(), trust.ActionsPullOnly...)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := r.verifyRootTrust(notaryRepo); err != nil {
+		return nil, err
+	}
+
+	targets, err := notaryRepo.ListTargets(data.CanonicalTargetsRole)
+	if err != nil {
+		return nil, err
+	}
+	tags := make([]string, 0, len(targets))
+	for _, targetWithRole := range targets {
+		tags = append(tags, targetWithRole.Name)
+	}
+	return tags, nil
+}
+
+func authResolver(cli *command.DockerCli) func(ctx context.Context, index *registry.IndexInfo) types.AuthConfig {
+	resolver := func(ctx context.Context, index *registry.IndexInfo) types.AuthConfig {
+		return command.ResolveAuthConfig(ctx, cli, index)
+	}
+	return resolver
+}
+
+func (r *RemoteRegistries) newDockerCLI() (*command.DockerCli, error) {
+	cli, err := command.NewDockerCli(command.WithContentTrust(r.trustKey != ""))
 	if err != nil {
 		return nil, err
 	}
 	if err := cli.Initialize(flags.NewClientOptions()); err != nil {
 		return nil, fmt.Errorf("initializing cli: %w", err)
 	}
+	return cli, nil
+}
 
-	tags, err := cli.RegistryClient(false).GetTags(ctx, normalized)
+func (r *RemoteRegistries) verifyRootTrust(notaryRepo notary.Repository) error {
+	roles, err := notaryRepo.ListRoles()
 	if err != nil {
-		return nil, fmt.Errorf("listing tags: %w", err)
+		return fmt.Errorf("listing roles: %w", err)
 	}
-	return tags, nil
+	for _, role := range roles {
+		if role.Name == data.CanonicalRootRole {
+			for _, keyID := range role.KeyIDs {
+				if keyID == r.trustKey {
+					for _, sig := range role.Signatures {
+						if sig.KeyID == keyID && sig.IsValid {
+							return nil
+						}
+					}
+				}
+			}
+		}
+	}
+	return fmt.Errorf("trusted root key not found")
 }
 
 func (r *RemoteRegistries) Pin(ctx context.Context, image string) (string, error) {
+
 	// Normalize image name:
 	normalized, err := reference.ParseNormalizedNamed(image)
 	if err != nil {
@@ -66,20 +140,21 @@ func (r *RemoteRegistries) Pin(ctx context.Context, image string) (string, error
 	}
 	logrus.WithField("image", normalized.String()).Debug("listing image tags")
 
-	cli, err := command.NewDockerCli()
+	cli, err := r.newDockerCLI()
 	if err != nil {
 		return "", err
 	}
-	if err := cli.Initialize(flags.NewClientOptions()); err != nil {
-		return "", fmt.Errorf("initializing cli: %w", err)
-	}
+	resolver := authResolver(cli)
 
-	registryClient := cli.RegistryClient(false)
-	mf, err := r.getManifest(ctx, registryClient, normalized)
-	if err != nil {
-		return "", fmt.Errorf("getting manifest: %w", err)
+	if !cli.ContentTrustEnabled() {
+		registryClient := client.NewRegistryClient(resolver, userAgent, false)
+		mf, err := r.getManifest(ctx, registryClient, normalized)
+		if err != nil {
+			return "", fmt.Errorf("getting manifest: %w", err)
+		}
+		return mf.Descriptor.Digest.String(), nil
 	}
-	return mf.Descriptor.Digest.String(), nil
+	return "", fmt.Errorf("TODO: pin from content trust")
 }
 
 func (r *RemoteRegistries) Unpin(ctx context.Context, image, hash string) (string, error) {
@@ -88,15 +163,20 @@ func (r *RemoteRegistries) Unpin(ctx context.Context, image, hash string) (strin
 		return "", fmt.Errorf("invalid image name: %w", err)
 	}
 
-	cli, err := command.NewDockerCli()
+	cli, err := r.newDockerCLI()
 	if err != nil {
 		return "", err
 	}
-	if err := cli.Initialize(flags.NewClientOptions()); err != nil {
-		return "", fmt.Errorf("initializing cli: %w", err)
-	}
+	resolver := authResolver(cli)
 
-	registryClient := cli.RegistryClient(false)
+	if !cli.ContentTrustEnabled() {
+		registryClient := client.NewRegistryClient(resolver, userAgent, false)
+		return r.unpinFromRegistry(ctx, registryClient, normalized, hash)
+	}
+	return "", fmt.Errorf("TODO: content trust")
+}
+
+func (r *RemoteRegistries) unpinFromRegistry(ctx context.Context, registryClient client.RegistryClient, normalized reference.Named, hash string) (string, error) {
 	tags, err := registryClient.GetTags(ctx, normalized)
 	if err != nil {
 		return "", err
@@ -147,7 +227,7 @@ func (r *RemoteRegistries) Unpin(ctx context.Context, image, hash string) (strin
 	return "", fmt.Errorf("manifest not found")
 }
 
-func (r *RemoteRegistries) getManifest(ctx context.Context, registryClient client.RegistryClient, normalized reference.Named) (*types.ImageManifest, error) {
+func (r *RemoteRegistries) getManifest(ctx context.Context, registryClient client.RegistryClient, normalized reference.Named) (*manifest.ImageManifest, error) {
 	// Assume this image is available for one platform:
 	mf, err := registryClient.GetManifest(ctx, normalized)
 	if err == nil {

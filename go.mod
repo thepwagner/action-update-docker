@@ -6,6 +6,7 @@ require (
 	github.com/cloudflare/cfssl v1.5.0 // indirect
 	github.com/docker/cli v20.10.0-beta1.0.20201029214301-1d20b15adc38+incompatible
 	github.com/docker/distribution v2.7.1+incompatible
+	github.com/docker/docker v20.10.0-beta1.0.20201110211921-af34b94a78a1+incompatible
 	github.com/fvbommel/sortorder v1.0.2 // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
@@ -17,7 +18,7 @@ require (
 	github.com/spf13/viper v1.7.1 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/thepwagner/action-update v0.0.37
-	github.com/theupdateframework/notary v0.7.0 // indirect
+	github.com/theupdateframework/notary v0.7.0
 	golang.org/x/mod v0.4.1
 
 )
