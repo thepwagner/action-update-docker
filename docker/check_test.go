@@ -29,6 +29,14 @@ func TestUpdater_CheckAuth(t *testing.T) {
 	assert.Equal(t, "3.12.0", u.Next)
 }
 
+func TestUpdater_CheckAuthPinned(t *testing.T) {
+	t.Skip("early integration test")
+	var privateImage = updater.Dependency{Path: "ghcr.io/thepwagner/alpine", Version: "sha256:d371657a4f661a854ff050898003f4cb6c7f36d968a943c1d5cde0952bd93c80"}
+	u := updatertest.CheckInFixture(t, "pinned", updaterFactory(), privateImage, nil)
+	assert.NotNil(t, u)
+	assert.Equal(t, "3.12.0", u.Next)
+}
+
 func TestUpdater_Check(t *testing.T) {
 	cases := map[string]struct {
 		dep      updater.Dependency

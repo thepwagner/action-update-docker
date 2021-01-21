@@ -22,6 +22,7 @@ type TagLister interface {
 type ImagePinner interface {
 	// Pin normalizes Docker image name to sha256 pinned image.
 	Pin(ctx context.Context, image string) (string, error)
+	Unpin(ctx context.Context, image, hash string) (string, error)
 }
 
 type RemoteRegistries struct {
@@ -79,6 +80,71 @@ func (r *RemoteRegistries) Pin(ctx context.Context, image string) (string, error
 		return "", fmt.Errorf("getting manifest: %w", err)
 	}
 	return mf.Descriptor.Digest.String(), nil
+}
+
+func (r *RemoteRegistries) Unpin(ctx context.Context, image, hash string) (string, error) {
+	normalized, err := reference.ParseNormalizedNamed(fmt.Sprintf("%s@%s", image, hash))
+	if err != nil {
+		return "", fmt.Errorf("invalid image name: %w", err)
+	}
+
+	cli, err := command.NewDockerCli()
+	if err != nil {
+		return "", err
+	}
+	if err := cli.Initialize(flags.NewClientOptions()); err != nil {
+		return "", fmt.Errorf("initializing cli: %w", err)
+	}
+
+	registryClient := cli.RegistryClient(false)
+	tags, err := registryClient.GetTags(ctx, normalized)
+	if err != nil {
+		return "", err
+	}
+	if len(tags) == 0 {
+		return "", fmt.Errorf("tag not found")
+	}
+
+	// Filter semver tags, work backwards (assuming the pinned sha is a near-latest version)
+	semverTags := make([]string, 0)
+	for _, tag := range tags {
+		if semverIsh(tag) == "" {
+			continue
+		}
+		semverTags = append(semverTags, tag)
+	}
+	semverTags = semverSort(semverTags)
+
+	logrus.WithFields(logrus.Fields{
+		"image": normalized.String(),
+		"hash":  hash,
+		"tags":  len(semverTags),
+	}).Info("listing tags to identify SHA")
+
+	for _, tag := range semverTags {
+		normalizedTag, err := reference.ParseNormalizedNamed(fmt.Sprintf("%s:%s", normalized.Name(), tag))
+		if err != nil {
+			continue
+		}
+		mf, err := r.getManifest(ctx, registryClient, normalizedTag)
+		if err != nil {
+			continue
+		}
+		digest := mf.Descriptor.Digest.String()
+		logrus.WithFields(logrus.Fields{
+			"tag":    tag,
+			"digest": digest,
+		}).Debug("fetched image details")
+
+		if digest == hash {
+			logrus.WithFields(logrus.Fields{
+				"digest": digest,
+				"tag":    tag,
+			}).Info("resolved pinned image to tag")
+			return tag, nil
+		}
+	}
+	return "", fmt.Errorf("manifest not found")
 }
 
 func (r *RemoteRegistries) getManifest(ctx context.Context, registryClient client.RegistryClient, normalized reference.Named) (*types.ImageManifest, error) {
