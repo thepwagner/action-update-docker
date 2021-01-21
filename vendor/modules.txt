@@ -6,20 +6,12 @@ github.com/Microsoft/go-winio
 github.com/Microsoft/go-winio/pkg/guid
 # github.com/Microsoft/hcsshim v0.8.10
 github.com/Microsoft/hcsshim/osversion
-# github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
-## explicit
-github.com/agl/ed25519
-github.com/agl/ed25519/edwards25519
 # github.com/beorn7/perks v1.0.0
 github.com/beorn7/perks/quantile
-# github.com/bitly/go-hostpool v0.1.0
-## explicit
-# github.com/bmatcuk/doublestar/v2 v2.0.4
-github.com/bmatcuk/doublestar/v2
+# github.com/bmatcuk/doublestar/v3 v3.0.0
+github.com/bmatcuk/doublestar/v3
 # github.com/caarlos0/env/v6 v6.4.0
 github.com/caarlos0/env/v6
-# github.com/cenkalti/backoff v2.2.1+incompatible
-## explicit
 # github.com/cloudflare/cfssl v1.5.0
 ## explicit
 # github.com/containerd/containerd v1.4.1-0.20201117152358-0edc412565dc => github.com/containerd/containerd v1.4.0
@@ -106,8 +98,7 @@ github.com/docker/docker/rootless
 # github.com/docker/docker-credential-helpers v0.6.3
 github.com/docker/docker-credential-helpers/client
 github.com/docker/docker-credential-helpers/credentials
-# github.com/docker/go v1.5.1-1
-## explicit
+# github.com/docker/go v1.5.1-1.0.20160303222718-d30aec9fd63c
 github.com/docker/go/canonical/json
 # github.com/docker/go-connections v0.4.0
 github.com/docker/go-connections/nat
@@ -199,8 +190,6 @@ github.com/google/go-github/v33/github
 github.com/google/go-querystring/query
 # github.com/gorilla/mux v1.8.0
 github.com/gorilla/mux
-# github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed
-## explicit
 # github.com/imdario/mergo v0.3.9
 github.com/imdario/mergo
 # github.com/inconshreveable/mousetrap v1.0.0
@@ -213,7 +202,7 @@ github.com/jbenet/go-context/io
 github.com/kevinburke/ssh_config
 # github.com/lib/pq v1.9.0
 ## explicit
-# github.com/mattn/go-sqlite3 v1.14.5
+# github.com/mattn/go-sqlite3 v1.14.6
 ## explicit
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
 github.com/matttproud/golang_protobuf_extensions/pbutil
@@ -239,7 +228,7 @@ github.com/opencontainers/image-spec/specs-go
 github.com/opencontainers/image-spec/specs-go/v1
 # github.com/opencontainers/runc v1.0.0-rc92
 github.com/opencontainers/runc/libcontainer/user
-# github.com/otiai10/copy v1.2.0
+# github.com/otiai10/copy v1.4.2
 github.com/otiai10/copy
 # github.com/pkg/errors v0.9.1
 github.com/pkg/errors
@@ -272,12 +261,12 @@ github.com/spf13/pflag
 ## explicit
 # github.com/stretchr/objx v0.2.0
 github.com/stretchr/objx
-# github.com/stretchr/testify v1.6.1
+# github.com/stretchr/testify v1.7.0
 ## explicit
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/mock
 github.com/stretchr/testify/require
-# github.com/thepwagner/action-update v0.0.30
+# github.com/thepwagner/action-update v0.0.37
 ## explicit
 github.com/thepwagner/action-update/actions
 github.com/thepwagner/action-update/actions/updateaction
@@ -285,7 +274,7 @@ github.com/thepwagner/action-update/cmd
 github.com/thepwagner/action-update/repo
 github.com/thepwagner/action-update/updater
 github.com/thepwagner/action-update/updatertest
-# github.com/theupdateframework/notary v0.6.1
+# github.com/theupdateframework/notary v0.7.0
 ## explicit
 github.com/theupdateframework/notary
 github.com/theupdateframework/notary/client
@@ -323,8 +312,7 @@ golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
-golang.org/x/crypto/ssh/terminal
-# golang.org/x/mod v0.4.0
+# golang.org/x/mod v0.4.1
 ## explicit
 golang.org/x/mod/semver
 # golang.org/x/net v0.0.0-20201010224723-4f7140c49acb
@@ -387,12 +375,6 @@ google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/known/anypb
 google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/timestamppb
-# gopkg.in/dancannon/gorethink.v3 v3.0.5
-## explicit
-# gopkg.in/fatih/pool.v2 v2.0.0
-## explicit
-# gopkg.in/gorethink/gorethink.v3 v3.0.5
-## explicit
 # gopkg.in/warnings.v0 v0.1.2
 gopkg.in/warnings.v0
 # gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c

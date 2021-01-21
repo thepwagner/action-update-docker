@@ -28,6 +28,8 @@ func NewUpdater(root string, opts ...UpdaterOpt) *Updater {
 	return u
 }
 
+func (u *Updater) Name() string { return "docker" }
+
 type UpdaterOpt func(*Updater)
 
 func WithTagsLister(tags TagLister) UpdaterOpt {
