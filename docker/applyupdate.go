@@ -49,7 +49,22 @@ func (u *Updater) ApplyUpdate(ctx context.Context, update updater.Update) error 
 					} else {
 						replacement = fmt.Sprintf("%s:%s", update.Path, nextVersion)
 					}
-					oldnew = append(oldnew, instruction.Original, re.ReplaceAllString(instruction.Original, replacement))
+					newInstruction := re.ReplaceAllString(instruction.Original, replacement)
+
+					oldVersion := fmt.Sprintf("%s:%s", update.Path, update.Previous)
+					newVersion := fmt.Sprintf("%s:%s", update.Path, update.Next)
+					var commentFound bool
+					for _, comment := range instruction.PrevComment {
+						if strings.Contains(comment, oldVersion) {
+							comment = fmt.Sprintf("# %s", comment)
+							oldnew = append(oldnew, comment, re.ReplaceAllString(comment, newVersion))
+							commentFound = true
+						}
+					}
+					if u.pinImageSha && !commentFound {
+						newInstruction = fmt.Sprintf("# %s\n%s", newVersion, newInstruction)
+					}
+					oldnew = append(oldnew, instruction.Original, newInstruction)
 				}
 			case command.Arg:
 				if seenFrom {

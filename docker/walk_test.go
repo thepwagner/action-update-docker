@@ -12,7 +12,7 @@ import (
 	"github.com/thepwagner/action-update-docker/docker"
 )
 
-const fixtureCount = 3
+const fixtureCount = 4
 
 func TestWalkDockerfiles(t *testing.T) {
 	var cnt int64

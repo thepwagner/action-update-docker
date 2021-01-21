@@ -3,6 +3,7 @@ package docker
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/moby/buildkit/frontend/dockerfile/command"
@@ -46,6 +47,8 @@ func extractImages(parsed *parser.Result) ([]updater.Dependency, error) {
 	return deps, nil
 }
 
+var sha256RE = regexp.MustCompile("[a-f0-9]{64}")
+
 func parseDependency(vars *Interpolation, image string) *updater.Dependency {
 	imageSplit := strings.SplitN(image, ":", 2)
 	if len(imageSplit) == 1 {
@@ -62,6 +65,8 @@ func parseDependency(vars *Interpolation, image string) *updater.Dependency {
 	} else if semverIsh(imageSplit[1]) != "" {
 		// Image tag is valid semver:
 		return &updater.Dependency{Path: imageSplit[0], Version: imageSplit[1]}
+	} else if strings.HasSuffix(imageSplit[0], "@sha256") && sha256RE.MatchString(imageSplit[1]) {
+		return &updater.Dependency{Path: imageSplit[0][:len(imageSplit[0])-7], Version: fmt.Sprintf("sha256:%s", imageSplit[1])}
 	}
 	return nil
 }

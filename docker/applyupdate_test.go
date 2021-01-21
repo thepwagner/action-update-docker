@@ -15,19 +15,22 @@ import (
 
 var (
 	alpine3120 = updater.Update{Path: "alpine", Previous: "3.11.0", Next: "3.12.0"}
-	redis608   = updater.Update{Path: "redis", Previous: "6.0.0-alpine", Next: "6.0.8-alpine"}
+	//alpine3120Pinned = updater.Update{Path: "alpine", Previous: "sha256:7c92a2c6bbcb6b6beff92d0a940779769c2477b807c202954c537e2e0deb9bed", Next: "3.12.0"}
+	redis608 = updater.Update{Path: "redis", Previous: "6.0.0-alpine", Next: "6.0.8-alpine"}
 )
 
 func TestUpdater_ApplyUpdate_Simple(t *testing.T) {
 	dockerfile := applyUpdateToFixture(t, "simple", alpine3120)
 	assert.Contains(t, dockerfile, "alpine:3.12.0")
+	assert.NotContains(t, dockerfile, "# alpine:3.12.0\n")
 	assert.NotContains(t, dockerfile, "alpine:3.11.0")
 }
 
 func TestUpdater_ApplyUpdate_Simple_Pinned(t *testing.T) {
 	dockerfile := applyUpdateToFixture(t, "simple", alpine3120, withShaPinning("sha256:pinned")...)
 	assert.Contains(t, dockerfile, "alpine@sha256:pinned")
-	assert.NotContains(t, dockerfile, "alpine:3.12.0")
+	assert.Contains(t, dockerfile, "# alpine:3.12.0\n")
+	assert.NotContains(t, dockerfile, "FROM alpine:3.12.0")
 	assert.NotContains(t, dockerfile, "alpine:3.11.0")
 }
 
@@ -50,6 +53,20 @@ func TestUpdater_ApplyUpdate_Comments(t *testing.T) {
 	dockerfile := applyUpdateToFixture(t, "comments", redis608)
 	assert.Contains(t, dockerfile, "ARG REDIS_VERSION=6.0.8 # redis")
 	assert.Contains(t, dockerfile, "# check out this whitespace\n\n\n# intentional trailing spaces  \n")
+}
+
+func TestUpdater_ApplyUpdate_Pinned(t *testing.T) {
+	dockerfile := applyUpdateToFixture(t, "pinned", alpine3120)
+	assert.Contains(t, dockerfile, "FROM alpine:3.12.0")
+	assert.Contains(t, dockerfile, "# alpine:3.12.0\n")
+	assert.NotContains(t, dockerfile, "alpine:3.11.0")
+}
+func TestUpdater_ApplyUpdate_Pinned_Pinned(t *testing.T) {
+	dockerfile := applyUpdateToFixture(t, "pinned", alpine3120, withShaPinning("sha256:pinned")...)
+	assert.Contains(t, dockerfile, "alpine@sha256:pinned")
+	assert.Contains(t, dockerfile, "# alpine:3.12.0\n")
+	assert.NotContains(t, dockerfile, "FROM alpine:3.12.0")
+	assert.NotContains(t, dockerfile, "alpine:3.11.0")
 }
 
 func applyUpdateToFixture(t *testing.T, fixture string, update updater.Update, opts ...docker.UpdaterOpt) string {
