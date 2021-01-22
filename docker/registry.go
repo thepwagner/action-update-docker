@@ -2,6 +2,7 @@ package docker
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 	"strings"
@@ -68,20 +69,7 @@ func (r *RemoteRegistries) Tags(ctx context.Context, image string) ([]string, er
 	}
 
 	logrus.Debug("content trust enabled, listing notary")
-	imgRefAndAuth, err := trust.GetImageReferencesAndAuth(ctx, nil, resolver, image)
-	if err != nil {
-		return nil, err
-	}
-	notaryRepo, err := trust.GetNotaryRepository(cli.In(), cli.Out(), userAgent, imgRefAndAuth.RepoInfo(), imgRefAndAuth.AuthConfig(), trust.ActionsPullOnly...)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := r.verifyRootTrust(notaryRepo); err != nil {
-		return nil, err
-	}
-
-	targets, err := notaryRepo.ListTargets(data.CanonicalTargetsRole)
+	targets, err := r.notaryListTargets(ctx, normalized.Name(), resolver, cli)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +120,6 @@ func (r *RemoteRegistries) verifyRootTrust(notaryRepo notary.Repository) error {
 }
 
 func (r *RemoteRegistries) Pin(ctx context.Context, image string) (string, error) {
-
 	// Normalize image name:
 	normalized, err := reference.ParseNormalizedNamed(image)
 	if err != nil {
@@ -154,7 +141,42 @@ func (r *RemoteRegistries) Pin(ctx context.Context, image string) (string, error
 		}
 		return mf.Descriptor.Digest.String(), nil
 	}
-	return "", fmt.Errorf("TODO: pin from content trust")
+
+	logrus.Debug("content trust enabled, listing notary")
+	targets, err := r.notaryListTargets(ctx, image, resolver, cli)
+	if err != nil {
+		return "", err
+	}
+
+	name := normalized.(reference.Tagged).Tag()
+	for _, targetWithRole := range targets {
+		if targetWithRole.Name != name {
+			continue
+		}
+		sha256Hash, ok := targetWithRole.Hashes["sha256"]
+		if !ok {
+			return "", fmt.Errorf("hash not found")
+		}
+		return fmt.Sprintf("sha256:%x", sha256Hash), nil
+	}
+	return "", fmt.Errorf("image not found in content trust")
+}
+
+func (r *RemoteRegistries) notaryListTargets(ctx context.Context, image string, resolver func(ctx context.Context, index *registry.IndexInfo) types.AuthConfig, cli *command.DockerCli) ([]*notary.TargetWithRole, error) {
+	imgRefAndAuth, err := trust.GetImageReferencesAndAuth(ctx, nil, resolver, image)
+	if err != nil {
+		return nil, err
+	}
+	notaryRepo, err := trust.GetNotaryRepository(cli.In(), cli.Out(), userAgent, imgRefAndAuth.RepoInfo(), imgRefAndAuth.AuthConfig(), trust.ActionsPullOnly...)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := r.verifyRootTrust(notaryRepo); err != nil {
+		return nil, err
+	}
+
+	return notaryRepo.ListTargets(data.CanonicalTargetsRole)
 }
 
 func (r *RemoteRegistries) Unpin(ctx context.Context, image, hash string) (string, error) {
@@ -173,6 +195,23 @@ func (r *RemoteRegistries) Unpin(ctx context.Context, image, hash string) (strin
 		registryClient := client.NewRegistryClient(resolver, userAgent, false)
 		return r.unpinFromRegistry(ctx, registryClient, normalized, hash)
 	}
+
+	logrus.Debug("content trust enabled, listing notary")
+	targets, err := r.notaryListTargets(ctx, image, resolver, cli)
+	if err != nil {
+		return "", err
+	}
+
+	for _, targetWithRole := range targets {
+		sha256Hash, ok := targetWithRole.Hashes["sha256"]
+		if !ok {
+			continue
+		}
+		if hex.EncodeToString(sha256Hash) == hash[7:] {
+			return targetWithRole.Name, nil
+		}
+	}
+
 	return "", fmt.Errorf("TODO: content trust")
 }
 
