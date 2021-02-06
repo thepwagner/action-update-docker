@@ -16,7 +16,7 @@ type Updater struct {
 var _ updater.Updater = (*Updater)(nil)
 
 func NewUpdater(root string, opts ...UpdaterOpt) *Updater {
-	reg := NewRemoteRegistries()
+	reg := NewRemoteRegistries("")
 	u := &Updater{
 		root:   root,
 		tags:   reg,
