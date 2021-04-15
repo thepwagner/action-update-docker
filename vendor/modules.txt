@@ -202,7 +202,7 @@ github.com/jbenet/go-context/io
 github.com/kevinburke/ssh_config
 # github.com/lib/pq v1.10.0
 ## explicit
-# github.com/mattn/go-sqlite3 v1.14.6
+# github.com/mattn/go-sqlite3 v1.14.7
 ## explicit
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
 github.com/matttproud/golang_protobuf_extensions/pbutil
