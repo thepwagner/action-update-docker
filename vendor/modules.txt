@@ -200,7 +200,7 @@ github.com/jbenet/go-context/io
 ## explicit
 # github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351
 github.com/kevinburke/ssh_config
-# github.com/lib/pq v1.10.0
+# github.com/lib/pq v1.10.1
 ## explicit
 # github.com/mattn/go-sqlite3 v1.14.7
 ## explicit
