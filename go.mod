@@ -3,7 +3,7 @@ module github.com/thepwagner/action-update-docker
 go 1.15
 
 require (
-	github.com/cloudflare/cfssl v1.5.0 // indirect
+	github.com/cloudflare/cfssl v1.6.0 // indirect
 	github.com/docker/cli v20.10.0-beta1.0.20201029214301-1d20b15adc38+incompatible
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/fvbommel/sortorder v1.0.2 // indirect
