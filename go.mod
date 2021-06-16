@@ -14,7 +14,7 @@ require (
 	github.com/miekg/pkcs11 v1.0.3 // indirect
 	github.com/moby/buildkit v0.8.3
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/viper v1.7.1 // indirect
+	github.com/spf13/viper v1.8.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/thepwagner/action-update v0.0.40
 	github.com/theupdateframework/notary v0.7.0 // indirect
