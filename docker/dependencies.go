@@ -9,6 +9,7 @@ import (
 	"github.com/moby/buildkit/frontend/dockerfile/command"
 	"github.com/moby/buildkit/frontend/dockerfile/parser"
 	"github.com/thepwagner/action-update/updater"
+	"github.com/thepwagner/action-update/version"
 )
 
 func (u *Updater) Dependencies(_ context.Context) ([]updater.Dependency, error) {
@@ -62,7 +63,7 @@ func parseDependency(vars *Interpolation, image string) *updater.Dependency {
 		if !strings.Contains(vers, "$") {
 			return &updater.Dependency{Path: imageSplit[0], Version: vers}
 		}
-	} else if semverIsh(imageSplit[1]) != "" {
+	} else if version.Semverish(imageSplit[1]) != "" {
 		// Image tag is valid semver:
 		return &updater.Dependency{Path: imageSplit[0], Version: imageSplit[1]}
 	} else if strings.HasSuffix(imageSplit[0], "@sha256") && sha256RE.MatchString(imageSplit[1]) {

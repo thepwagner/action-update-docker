@@ -11,6 +11,7 @@ import (
 	"github.com/moby/buildkit/frontend/dockerfile/command"
 	"github.com/moby/buildkit/frontend/dockerfile/parser"
 	"github.com/thepwagner/action-update/updater"
+	"github.com/thepwagner/action-update/version"
 	"golang.org/x/mod/semver"
 )
 
@@ -82,13 +83,13 @@ func (u *Updater) ApplyUpdate(ctx context.Context, update updater.Update) error 
 					continue
 				}
 
-				suffix := semver.Prerelease(semverIsh(update.Previous))
+				suffix := semver.Prerelease(version.Semverish(update.Previous))
 				if suffix != "" {
-					c := semver.Canonical(semverIsh(varSplit[1]))
+					c := semver.Canonical(version.Semverish(varSplit[1]))
 					noSuffix := update.Previous[:len(update.Previous)-len(suffix)]
 
-					if semver.Compare(c, semver.Canonical(semverIsh(noSuffix))) == 0 {
-						nextSuffix := semver.Prerelease(semverIsh(update.Next))
+					if semver.Compare(c, semver.Canonical(version.Semverish(noSuffix))) == 0 {
+						nextSuffix := semver.Prerelease(version.Semverish(update.Next))
 						nextNoSuffix := update.Next[:len(update.Next)-len(nextSuffix)]
 						oldnew = append(oldnew, instruction.Original, strings.ReplaceAll(instruction.Original, noSuffix, nextNoSuffix))
 						continue
