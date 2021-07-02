@@ -12,6 +12,7 @@ import (
 	"github.com/docker/cli/cli/registry/client"
 	"github.com/docker/distribution/reference"
 	"github.com/sirupsen/logrus"
+	"github.com/thepwagner/action-update/version"
 )
 
 type TagLister interface {
@@ -108,12 +109,12 @@ func (r *RemoteRegistries) Unpin(ctx context.Context, image, hash string) (strin
 	// Filter semver tags, work backwards (assuming the pinned sha is a near-latest version)
 	semverTags := make([]string, 0)
 	for _, tag := range tags {
-		if semverIsh(tag) == "" {
+		if version.Semverish(tag) == "" {
 			continue
 		}
 		semverTags = append(semverTags, tag)
 	}
-	semverTags = semverSort(semverTags)
+	semverTags = version.SemverSort(semverTags)
 
 	logrus.WithFields(logrus.Fields{
 		"image": normalized.String(),
