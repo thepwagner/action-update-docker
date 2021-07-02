@@ -1,6 +1,6 @@
 module github.com/thepwagner/action-update-docker
 
-go 1.15
+go 1.16
 
 require (
 	github.com/cloudflare/cfssl v1.6.0 // indirect
@@ -8,8 +8,6 @@ require (
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/fvbommel/sortorder v1.0.2 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
-	github.com/lib/pq v1.10.2 // indirect
-	github.com/mattn/go-sqlite3 v1.14.7 // indirect
 	github.com/miekg/pkcs11 v1.0.3 // indirect
 	github.com/moby/buildkit v0.8.3
 	github.com/sirupsen/logrus v1.8.1
