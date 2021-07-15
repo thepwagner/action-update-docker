@@ -4,18 +4,20 @@ go 1.16
 
 require (
 	github.com/cloudflare/cfssl v1.6.0 // indirect
-	github.com/docker/cli v20.10.0-beta1.0.20201029214301-1d20b15adc38+incompatible
+	github.com/docker/cli v20.10.7+incompatible
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/fvbommel/sortorder v1.0.2 // indirect
+	github.com/gotestyourself/gotestyourself v1.4.0 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/miekg/pkcs11 v1.0.3 // indirect
-	github.com/moby/buildkit v0.8.3
+	github.com/moby/buildkit v0.9.0-rc1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.8.1 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/thepwagner/action-update v0.0.42
 	github.com/theupdateframework/notary v0.7.0 // indirect
 	golang.org/x/mod v0.4.2
+	gotest.tools v1.4.0 // indirect
 
 )
 
