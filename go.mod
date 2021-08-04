@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/cloudflare/cfssl v1.6.0 // indirect
-	github.com/docker/cli v20.10.7+incompatible
+	github.com/docker/cli v20.10.8+incompatible
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/fvbommel/sortorder v1.0.2 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
