@@ -1,7 +1,5 @@
 # action-update-docker
 
-## This is not endorsed by or associated with GitHub, Dependabot, etc.
-
 This Action checks for available updates to semver-compatible Docker images in Dockerfiles.
 
 * Supports `ARG` interpolation
